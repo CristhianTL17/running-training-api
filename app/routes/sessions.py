@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from sqlalchemy.orm import Session
 
@@ -8,11 +8,17 @@ from app.models.session import Session as TrainingSession
 
 from app.schemas.session import SessionCreate
 
+from app.routes.auth import get_current_user
+
 router = APIRouter()
 
 
 @router.post("/sessions")
-def create_session(session: SessionCreate, db: Session = Depends(get_db)):
+def create_session(
+    session: SessionCreate,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
     new_session = TrainingSession(
         date=session.date,
         title=session.title,
@@ -36,7 +42,10 @@ def create_session(session: SessionCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/sessions")
-def get_sessions(db: Session = Depends(get_db)):
+def get_sessions(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
     sessions = db.query(TrainingSession).all()
 
     return sessions
@@ -54,11 +63,15 @@ def update_session(
     heart_rate: str,
     details: str,
     db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
 ):
     session = db.query(TrainingSession).filter(TrainingSession.id == id).first()
 
     if not session:
-        return {"error": "Session not found"}
+        raise HTTPException(
+            status_code=404,
+            detail="Session not found",
+        )
 
     session.title = title
     session.type = type
@@ -75,8 +88,18 @@ def update_session(
 
 
 @router.delete("/sessions/{id}")
-def delete_session(id: int, db: Session = Depends(get_db)):
+def delete_session(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
     session = db.query(TrainingSession).filter(TrainingSession.id == id).first()
+
+    if not session:
+        raise HTTPException(
+            status_code=404,
+            detail="Session not found",
+        )
 
     db.delete(session)
 
@@ -86,7 +109,11 @@ def delete_session(id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/plans/{id}/sessions")
-def get_plan_sessions(id: int, db: Session = Depends(get_db)):
+def get_plan_sessions(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
     sessions = db.query(TrainingSession).filter(TrainingSession.plan_id == id).all()
 
     return sessions
