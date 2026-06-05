@@ -6,7 +6,7 @@ from app.database import get_db
 
 from app.models.session import Session as TrainingSession
 
-from app.schemas.session import SessionCreate
+from app.schemas.session import SessionCreate, SessionUpdate
 
 from app.routes.auth import get_current_user
 
@@ -54,14 +54,7 @@ def get_sessions(
 @router.put("/sessions/{id}")
 def update_session(
     id: int,
-    title: str,
-    type: str,
-    zone: str,
-    distance: float,
-    duration: str,
-    pace: str,
-    heart_rate: str,
-    details: str,
+    session_data: SessionUpdate,
     db: Session = Depends(get_db),
     current_user: str = Depends(get_current_user),
 ):
@@ -73,14 +66,14 @@ def update_session(
             detail="Session not found",
         )
 
-    session.title = title
-    session.type = type
-    session.zone = zone
-    session.distance = distance
-    session.duration = duration
-    session.pace = pace
-    session.heart_rate = heart_rate
-    session.details = details
+    session.title = session_data.title
+    session.type = session_data.type
+    session.zone = session_data.zone
+    session.distance = session_data.distance
+    session.duration = session_data.duration
+    session.pace = session_data.pace
+    session.heart_rate = session_data.heart_rate
+    session.details = session_data.details
 
     db.commit()
 

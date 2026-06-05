@@ -29,7 +29,7 @@ Backend desarrollado con FastAPI para la gestión de atletas, planes de entrenam
 Clonar repositorio:
 
 ```bash
-git clone <url-del-repositorio>
+git clone https://github.com/CristhianTL17/running-training-api.git
 ```
 
 Crear entorno virtual:

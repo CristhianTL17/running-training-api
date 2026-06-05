@@ -26,3 +26,22 @@ class SessionCreate(BaseModel):
     resource_link: str
 
     plan_id: int
+
+
+class SessionUpdate(BaseModel):
+
+    title: str
+
+    type: str
+
+    zone: str
+
+    distance: float
+
+    duration: str
+
+    pace: str
+
+    heart_rate: str
+
+    details: str
