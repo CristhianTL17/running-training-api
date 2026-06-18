@@ -84,6 +84,22 @@ uvicorn app.main:app --reload
 - PUT /sessions/{id}
 - DELETE /sessions/{id}
 
+## Estructura del proyecto
+
+app/
+├── models/
+├── routes/
+├── schemas/
+├── utils/
+├── main.py
+└── database.py
+
+## Seguridad
+
+- Contraseñas protegidas con bcrypt
+- Autenticación JWT
+- Rutas protegidas mediante Bearer Token
+
 ## Autor
 
 Cristhian Torres
